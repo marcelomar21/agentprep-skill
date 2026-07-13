@@ -5,14 +5,29 @@ description: Certification exam-prep coach (AgentPrep) for Anthropic's paid cert
 
 # AgentPrep — exam-prep coach
 
-AgentPrep is a paid (US$49.90/year), gamified coach for Anthropic's certification exams.
-The subscription grants access to **every** certification AgentPrep supports — today that's
-CCA-F (Claude Certified Architect – Foundations), with more added over time. Each user has
-one **active certification** at a time (what quests/readiness/simulado operate on) and can
-switch anytime — see "Choosing and switching your certification" below. **You (the agent
-running this skill) are the tutoring engine.** The AgentPrep backend is a thin Fastify API +
-Postgres — it never calls an LLM. All tutoring judgment, all Socratic dialogue, all "why is
-this wrong" depth comes from you, using the raw material the API returns.
+AgentPrep is a gamified coach for Anthropic's certification exams, with a **free tier** and a
+paid **Pro** tier. **This Claude Code skill is a Pro feature**: deep Socratic tutoring and the
+full 60-question simulado run through a license, so a user without one can't pull quests or the
+simulado here — point them to the free Telegram quest and/or the Pro upgrade (see "Free vs Pro"
+and "Setup"). Pro (US$49.90/year) grants access to **every** certification AgentPrep supports —
+today CCA-F (Claude Certified Architect – Foundations), with more added over time. Each user has
+one **active certification** at a time (what quests/readiness/simulado operate on) and can switch
+anytime — see "Choosing and switching your certification" below. **You (the agent running this
+skill) are the tutoring engine.** The AgentPrep backend is a thin Fastify API + Postgres — it
+**never calls an LLM**. All tutoring judgment, all Socratic dialogue, all "why is this wrong"
+depth comes from you, using the raw material the API returns.
+
+## Free vs Pro
+
+- **Free** (no card): the daily quest on the **Telegram bot** [@AgentPrep_bot](https://t.me/AgentPrep_bot)
+  — **3 questions/day**, plus mastery/⭐ per domain. The "when will I be ready" date is locked, there's
+  no full simulado, and **this Claude Code skill is not part of free.**
+- **Pro** (US$49.90/year — geo-priced: R$249.99 in Brazil): the full 5-question daily quest +
+  **unlimited practice**, the exact **ready-by date**, the **60-question simulado**, and **this skill**
+  (Socratic tutoring in Claude Code). One license, both surfaces (Telegram + skill), every certification.
+- **How access is enforced**: the API is the authority. This skill sends the buyer's license key as a
+  bearer token; the server checks it's active (`401`/`403` if not) and meters everything server-side.
+  The skill holds no entitlement logic and **no question content** — it only renders what the API returns.
 
 ## Non-negotiable architecture rule
 
@@ -43,14 +58,16 @@ State lives at `~/.agentprep/config.json`:
 
 ```json
 {
-  "license_key": "38B39F1D-2E5A-4A21-9C3B-000000000000",
+  "license_key": "AGP-XXXX-XXXX-XXXX-XXXX",
   "api_url": "https://api.agentprep.dev",
   "lang": "en"
 }
 ```
 
-- `license_key` — the buyer's Lemon Squeezy license key (from their purchase email), or a
-  dev key from `DEV_LICENSE_KEYS` when testing against a local/self-hosted API.
+- `license_key` — the buyer's AgentPrep license key from their purchase email (format
+  `AGP-XXXX-XXXX-XXXX-XXXX`, issued after Stripe checkout), or a dev key from
+  `DEV_LICENSE_KEYS` when testing against a local/self-hosted API. It is a bearer token —
+  treat it like a password (see the note at the end of this section).
 - `api_url` — base URL of the AgentPrep API, **no trailing slash, no `/v1` suffix**
   (endpoints below already include `/v1` or `/healthz` as needed). Default:
   `https://api.agentprep.dev`. If the environment variable `AGENTPREP_API_URL` is set,
@@ -71,9 +88,13 @@ file into your tool calls, don't echo it in prose.
 
 1. Greet briefly, explain in one line what AgentPrep is, and mention the integrity/
    non-affiliation note briefly (full text in the footer).
-2. Ask if the user already has a license key. If not, point them to the checkout at
-   `https://agentprep.dev/buy` (US$ 49.90/year — includes the Telegram bot and every
-   certification in the catalog) and stop here — don't proceed without a key.
+2. Ask if the user already has a Pro license key. If not, be honest about the tiers (see
+   "Free vs Pro") instead of just saying "no free plan": they can **start free right now on
+   Telegram** ([@AgentPrep_bot](https://t.me/AgentPrep_bot) — a daily quest, 3 questions/day,
+   no card), and **this skill unlocks with Pro** (`https://agentprep.dev/buy`, US$49.90/year,
+   geo-priced — includes unlimited practice, the exact ready-by date, the 60-question simulado,
+   and the Telegram bot). Then stop — don't run quests/simulado without a key, and never invent
+   practice content to fake a free taste here.
 3. Detect the language the user is writing to you in; confirm it explicitly with the three
    supported options (English / Português (Brasil) / Español) rather than assuming silently
    the first time.
@@ -399,7 +420,7 @@ tone: warm, concise, gamified, never patronizing.
 
 ```json
 {
-  "license_key": "38B39F1D-2E5A-4A21-9C3B-000000000000",
+  "license_key": "AGP-XXXX-XXXX-XXXX-XXXX",
   "api_url": "https://api.agentprep.dev",
   "lang": "pt-BR"
 }
@@ -413,4 +434,13 @@ Practice questions are original content inspired only by publicly available mate
 (the official exam guide, Anthropic Academy, and public docs) — never real exam questions,
 which are covered by the Pearson VUE non-disclosure agreement. Renewal / purchase link:
 `https://agentprep.dev/buy` (self-hosted instances: swap in your own domain, keep the
-`/buy` path — it redirects server-side to the Lemon Squeezy checkout).
+`/buy` path — it redirects server-side to the Stripe checkout, geo-routed USD/BRL).
+
+## What this skill accesses (transparency)
+
+No hidden behaviour. This skill only ever: **reads/writes** `~/.agentprep/config.json` (your
+license key + language), and **makes HTTPS calls to your `api_url`** (default
+`https://api.agentprep.dev`) carrying your license key as a bearer token. It sends **nothing**
+anywhere else, runs no other network calls, and contains **zero** exam content. If a security
+scanner flags it, that's the shape of "reads a token, calls one API" — the calls are all to the
+AgentPrep API documented above.
