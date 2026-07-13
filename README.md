@@ -1,6 +1,6 @@
 # AgentPrep — Claude Code skill
 
-Gamified exam-prep coach for [Anthropic's Claude certifications](https://agentprep.dev) (CCAR-F, CCAO-F, and more as they launch): daily quests, Socratic tutoring, timed mock exams, and a readiness forecast that tells you the day you'll be ready.
+Gamified exam-prep coach for [Anthropic's Claude certifications](https://agentprep.dev) (CCAR-F, CCAO-F, CCDV-F, CCAR-P — more as they launch): daily quests, Socratic tutoring, timed mock exams, and a readiness forecast that tells you the day you'll be ready.
 
 ## Install
 

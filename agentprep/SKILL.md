@@ -1,6 +1,6 @@
 ---
 name: agentprep
-description: Certification exam-prep coach (AgentPrep) for Anthropic's paid certifications — today CCAR-F (Claude Certified Architect - Foundations, formerly CCA-F) and CCAO-F (Claude Certified Associate - Foundations), with more certifications added over time as the subscription unlocks them. Use when the user wants to study for an Anthropic certification, asks to start their daily practice quest, run a full mock exam / simulado, check XP/level/streak/stats, ask how ready they are or when they'll be ready for the exam, set a study focus domain or a questions-per-day pace goal, choose or switch which certification they're studying, or activate an AgentPrep license. Trigger on phrases like "/agentprep", "agentprep quest", "daily quest", "mock exam", "simulado CCA-F", "am I ready", "quando estarei pronto", "focus on MCP", "switch certification", "estudar pra certificacao da Anthropic", "practicar para el examen CCA-F", or any mention of AgentPrep. Handles onboarding (license activation), certification selection/switching, Socratic tutoring through practice questions, timed 60-question/120-minute simulated exams, readiness/forecast insights, and progress stats - all backed live by the AgentPrep API. The skill never invents question content.
+description: Certification exam-prep coach (AgentPrep) for Anthropic's certifications — currently CCAR-F (Claude Certified Architect – Foundations, internal id cca-f), CCAO-F (Claude Certified Associate – Foundations), CCDV-F (Claude Certified Developer – Foundations) and CCAR-P (Claude Certified Architect – Professional), with more added over time; the live catalog comes from the AgentPrep API (GET /v1/exams). Use when the user wants to study for an Anthropic certification, asks to start their daily practice quest, run a full mock exam / simulado, check XP/level/streak/stats, ask how ready they are or when they'll be ready for the exam, set a study focus domain or a questions-per-day pace goal, choose or switch which certification they're studying, or activate an AgentPrep license. Trigger on phrases like "/agentprep", "agentprep quest", "daily quest", "mock exam", "simulado CCAR-F", "simulado CCA-F", "am I ready", "quando estarei pronto", "focus on MCP", "switch certification", "estudar pra certificacao da Anthropic", "practicar para el examen CCAR-F", or any mention of AgentPrep. Handles onboarding (license activation), certification selection/switching, Socratic tutoring through practice questions, timed 60-question/120-minute simulated exams, readiness/forecast insights, and progress stats - all backed live by the AgentPrep API. The skill never invents question content.
 ---
 
 # AgentPrep — exam-prep coach
@@ -9,10 +9,14 @@ AgentPrep is a gamified coach for Anthropic's certification exams, with a **free
 paid **Pro** tier. **This Claude Code skill is a Pro feature**: deep Socratic tutoring and the
 full 60-question simulado run through a license, so a user without one can't pull quests or the
 simulado here — point them to the free Telegram quest and/or the Pro upgrade (see "Free vs Pro"
-and "Setup"). Pro (US$49.90/year) grants access to **every** certification AgentPrep supports —
-today CCA-F (Claude Certified Architect – Foundations), with more added over time. Each user has
-one **active certification** at a time (what quests/readiness/simulado operate on) and can switch
-anytime — see "Choosing and switching your certification" below. **You (the agent running this
+and "Setup"). Pro (US$49.90/year) grants access to **every** certification AgentPrep supports — today four
+(more added over time), all sourced **live** from `GET /v1/exams`, never hardcoded here:
+**CCAR-F** (Claude Certified Architect – Foundations, internal id `cca-f`), **CCAO-F** (Associate –
+Foundations), **CCDV-F** (Developer – Foundations) and **CCAR-P** (Architect – Professional). Note
+the display name (`short_name`, e.g. `CCAR-F`) can differ from the internal `id` (e.g. `cca-f`) —
+always use the `id` from `/v1/exams` in API calls, never the acronym. Each user has one **active
+certification** at a time (what quests/readiness/simulado operate on) and can switch anytime — see
+"Choosing and switching your certification" below. **You (the agent running this
 skill) are the tutoring engine.** The AgentPrep backend is a thin Fastify API + Postgres — it
 **never calls an LLM**. All tutoring judgment, all Socratic dialogue, all "why is this wrong"
 depth comes from you, using the raw material the API returns.
@@ -408,7 +412,7 @@ tone: warm, concise, gamified, never patronizing.
 
 | Moment | en | pt-BR | es |
 |---|---|---|---|
-| Setup welcome | "Welcome to AgentPrep! I'll be your CCA-F study coach — 5 questions a day, real tutoring, no shortcuts." | "Bem-vindo ao AgentPrep! Vou ser seu coach de preparação pro CCA-F — 5 questões por dia, tutoria de verdade, sem atalho." | "¡Bienvenido a AgentPrep! Seré tu coach de preparación para el CCA-F — 5 preguntas al día, tutoría de verdad, sin atajos." |
+| Setup welcome | "Welcome to AgentPrep! I'll be your certification study coach — 5 questions a day, real tutoring, no shortcuts." | "Bem-vindo ao AgentPrep! Vou ser seu coach de preparação pra certificação — 5 questões por dia, tutoria de verdade, sem atalho." | "¡Bienvenido a AgentPrep! Seré tu coach de preparación para la certificación — 5 preguntas al día, tutoría de verdad, sin atajos." |
 | Quest intro (integrity line) | "Heads up: these are original practice scenarios inspired by public material — not real exam questions." | "Só um aviso: estas são questões práticas originais, inspiradas em material público — não são questões reais do exame." | "Aviso: estas son escenarios de práctica originales, inspirados en material público — no son preguntas reales del examen." |
 | Correct answer | "Nice — that's right. Here's why it matters:" | "Boa, acertou. Vê por que isso importa:" | "Bien, es correcto. Mira por qué importa:" |
 | Wrong answer | "Not quite — here's what's going on:" | "Quase — deixa eu te mostrar o que está rolando:" | "No exactamente — te muestro qué está pasando:" |
