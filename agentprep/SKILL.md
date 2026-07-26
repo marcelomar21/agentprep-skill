@@ -9,7 +9,7 @@ AgentPrep is a gamified coach for Anthropic's certification exams, with a **free
 paid **Pro** tier. **This Claude Code skill is a Pro feature**: deep Socratic tutoring and the
 full 60-question simulado run through a license, so a user without one can't pull quests or the
 simulado here — point them to the free Telegram quest and/or the Pro upgrade (see "Free vs Pro"
-and "Setup"). Pro (US$49.90/year) grants access to **every** certification AgentPrep supports — today four
+and "Setup"). Pro (weekly or annual) grants access to **every** certification AgentPrep supports — today four
 (more added over time), all sourced **live** from `GET /v1/exams`, never hardcoded here:
 **CCAR-F** (Claude Certified Architect – Foundations, internal id `cca-f`), **CCAO-F** (Associate –
 Foundations), **CCDV-F** (Developer – Foundations) and **CCAR-P** (Architect – Professional). Note
@@ -26,7 +26,7 @@ depth comes from you, using the raw material the API returns.
 - **Free** (no card): the daily quest on the **Telegram bot** [@AgentPrep_bot](https://t.me/AgentPrep_bot)
   — **3 questions/day**, plus mastery/⭐ per domain. The "when will I be ready" date is locked, there's
   no full simulado, and **this Claude Code skill is not part of free.**
-- **Pro** (US$49.90/year — geo-priced: R$249.99 in Brazil): the full 5-question daily quest +
+- **Pro** (US$4.99/week or US$49.90/year — geo-priced: R$19.99 / R$249.99 in Brazil): the full 5-question daily quest +
   **unlimited practice**, the exact **ready-by date**, the **60-question simulado**, and **this skill**
   (Socratic tutoring in Claude Code). One license, both surfaces (Telegram + skill), every certification.
 - **How access is enforced**: the API is the authority. This skill sends the buyer's license key as a
@@ -95,9 +95,10 @@ file into your tool calls, don't echo it in prose.
 2. Ask if the user already has a Pro license key. If not, be honest about the tiers (see
    "Free vs Pro") instead of just saying "no free plan": they can **start free right now on
    Telegram** ([@AgentPrep_bot](https://t.me/AgentPrep_bot) — a daily quest, 3 questions/day,
-   no card), and **this skill unlocks with Pro** (`https://agentprep.dev/buy`, US$49.90/year,
-   geo-priced — includes unlimited practice, the exact ready-by date, the 60-question simulado,
-   and the Telegram bot). Then stop — don't run quests/simulado without a key, and never invent
+   no card), and **this skill unlocks with Pro** — the smallest door in is US$4.99/week
+   (`https://agentprep.dev/buy?plan=weekly`), or US$49.90/year (`https://agentprep.dev/buy`); both are
+   geo-priced and both include unlimited practice, the exact ready-by date, the 60-question simulado,
+   and the Telegram bot. Then stop — don't run quests/simulado without a key, and never invent
    practice content to fake a free taste here.
 3. Detect the language the user is writing to you in; confirm it explicitly with the three
    supported options (English / Português (Brasil) / Español) rather than assuming silently
