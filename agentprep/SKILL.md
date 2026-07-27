@@ -236,21 +236,21 @@ that's the whole point of exam mode. Review happens only after `finish`.
      -d '{"answers":[{"question_id":"<QID>","chosen":["<KEY>", ...]}, ...]}'
    ```
 
-   Response: `{score, passed, domain_breakdown, xp_gained}` — `score` is 0–1000, `passed`
+   Response: `{score, passed, domain_breakdown, xp_gained, review}` — `score` is 0–1000, `passed`
    is `score >= 720`, `domain_breakdown` is `{"1":{right,total}, "2":{...}, ...}`.
 7. Present the score, pass/fail clearly, and a per-domain bar for `domain_breakdown` (see
-   "Formatting" below). Then run a review conversation grounded in the weakest domains from
-   `domain_breakdown` — walk through the concepts behind each low-scoring domain the same
-   way you would in a quest, even without a per-question answer key.
+   "Formatting" below).
 
-   **If** the `finish` response includes an additional `review` field (an array shaped like
-   `[{question_id, chosen, correct, correct_options, explanations}, ...]`, mirroring the
-   `POST /v1/answers` response shape) — use it to walk through the actual missed questions
-   one by one, exactly like quest feedback. Treat `review` as optional: the domain-level
-   walkthrough above is the guaranteed fallback if it's absent. (Note: as of this spec
-   version the documented `finish` response does not list `review` — if it's missing,
-   don't treat that as an error, just use the domain-level fallback and don't imply you
-   have per-question detail you don't have.)
+   The `finish` response **always** includes a `review` field — an array shaped like
+   `[{question_id, chosen, correct, correct_options, explanations}, ...]`, one entry per
+   question in the simulado (mirroring the `POST /v1/answers` response shape; questions
+   left unanswered when finishing early show `chosen: []`, `correct: false`). Use it as
+   your primary material: walk through the actual missed questions one by one, exactly
+   like quest feedback — `correct_options` + `explanations` (keyed by option letter, so
+   you can explain *every* option, not just the chosen one) give you far more to teach
+   from than the domain aggregate alone. Group by `domain_breakdown`'s weakest domains to
+   decide *which* missed questions to prioritize when there are many, but don't stop at
+   the domain-level bar when you have the per-question detail — that's strictly richer.
 
 ## `/agentprep stats`
 
