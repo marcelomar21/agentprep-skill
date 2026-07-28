@@ -178,12 +178,15 @@ Runs the daily quest: 5 questions, Socratic tutoring, immediate per-question fee
 
       `chosen` is always an array of option keys, even for `type:"single"` (e.g. `["B"]`).
 
-   d. Response: `{correct, correct_options, explanations, xp_gained, progress, quest_completed}`.
+   d. Response: `{correct, correct_options, explanations, refs, xp_gained, progress, quest_completed}`.
       Reveal `correct` and `correct_options`, read the relevant parts of `explanations`
       (it's keyed by option letter — use it for *all* options, not just the chosen one, so
       you can explain why the tempting distractors are wrong too), then go deeper with your
       own tutoring: the underlying concept, how it generalizes, what to remember. Show the
-      XP gained for this question.
+      XP gained for this question. `refs` is an array of links to the official Anthropic docs
+      backing this question — after your own explanation, offer it as further reading (e.g.
+      "official docs: <url>"); it can be empty (a question with none yet) or carry more than
+      one link, so only mention it when non-empty.
    e. If the user wants to redo a question they already answered today, that's fine for
       practice — just tell them XP won't be granted twice for the same question on the same
       day (server-side idempotency; see next point).
