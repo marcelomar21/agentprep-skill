@@ -31,7 +31,7 @@ depth comes from you, using the raw material the API returns.
   **unlimited practice**, the exact **ready-by date**, the **60-question simulado**, and **this skill**
   (Socratic tutoring in Claude Code). One license, both surfaces (Telegram + skill), every certification.
 - **How access is enforced**: the API is the authority. This skill sends the buyer's license key as a
-  bearer token; the server checks it's active (`401`/`403` if not) and meters everything server-side.
+  bearer token; the server checks it's active (`401` if not) and meters everything server-side.
   The skill holds no entitlement logic and **no question content** — it only renders what the API returns.
 
 ## Non-negotiable architecture rule
@@ -404,8 +404,7 @@ The API always returns errors as `{"error": {"code": "...", "message": "..."}}`.
 |---|---|---|
 | Connection refused / timeout / DNS failure | API host unreachable | Tell the user clearly the AgentPrep API is unavailable right now. Try `curl -sS <API_URL>/healthz` (no auth) once to double-check — if that also fails, it's an outage; say so and stop. Don't retry in a loop, don't fabricate content. |
 | `5xx` on any call | Server-side error | Same as above: report it plainly, don't retry silently, don't invent a fallback quest. |
-| `401` | Missing/invalid/revoked license key | Ask the user to double-check the key, or re-run Setup. |
-| `403` and the license is expired | Subscription lapsed | Tell the user their access expired, and point them to the renewal link (see footer). Don't proceed with quest/simulado/stats. |
+| `401` | Missing, invalid, revoked **or expired** license key. The API answers all four the same way — `unauthorized` / `"Invalid or expired license"` — so you **cannot** tell them apart from the response. There is no separate status code for expiry. | Cover both live possibilities in one message: ask the user to double-check the key (or re-run Setup), **and** say that if the key is correct their subscription may have lapsed — point them to the renewal link in the footer. Don't proceed with quest/simulado/stats. |
 | `409` on `/v1/licenses/activate` | This key is already bound to a different user | Explain clearly: one license key = one account. Ask the user to confirm this is *their* key (check the purchase email) or contact support. Never silently switch or merge accounts. |
 | `400` | Validation error | Show `error.message`; this usually means a bug in how the request was built — don't retry blindly with the same payload. |
 | `404` (e.g. stale `session_id` on `/simulado/:id/finish`) | Unknown resource | Explain and suggest restarting that flow (e.g. start a new simulado). |
