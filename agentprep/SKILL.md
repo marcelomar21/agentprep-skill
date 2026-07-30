@@ -23,7 +23,7 @@ depth comes from you, using the raw material the API returns.
 
 ## Free vs Pro
 
-- **Free** (no card): the daily quest on the **Telegram bot** [@AgentPrep_bot](https://t.me/AgentPrep_bot)
+- **Free** (no card): the daily quest on the **Telegram bot** [@AgentPrep_bot](https://telegram.me/AgentPrep_bot?start=s_skill)
   — **3 questions/day**, plus mastery/⭐ per domain. The "when will I be ready" date is locked, there's
   no full simulado, and **this Claude Code skill is not part of free.**
 - **Pro** (US$ 4.99/week or US$ 49.90/year — geo-priced: billed in local currency in Brazil;
@@ -95,7 +95,7 @@ file into your tool calls, don't echo it in prose.
    non-affiliation note briefly (full text in the footer).
 2. Ask if the user already has a Pro license key. If not, be honest about the tiers (see
    "Free vs Pro") instead of just saying "no free plan": they can **start free right now on
-   Telegram** ([@AgentPrep_bot](https://t.me/AgentPrep_bot) — a daily quest, 3 questions/day,
+   Telegram** ([@AgentPrep_bot](https://telegram.me/AgentPrep_bot?start=s_skill) — a daily quest, 3 questions/day,
    no card), and **this skill unlocks with Pro** — the smallest door in is US$ 4.99/week
    (`https://agentprep.dev/buy?plan=weekly`), or US$ 49.90/year (`https://agentprep.dev/buy`); both are
    geo-priced and both include unlimited practice, the exact ready-by date, the 60-question simulado,

@@ -6,7 +6,8 @@ AgentPrep nunca chama um LLM). A skill não contém nenhuma questão: tudo vem, 
 real, da API do AgentPrep.
 
 > **Esta skill é um recurso Pro.** O tier **grátis** do AgentPrep vive no bot do Telegram
-> ([@AgentPrep_bot](https://t.me/AgentPrep_bot) — quest diária de 3 questões, sem cartão). A skill
+> ([@AgentPrep_bot](https://telegram.me/AgentPrep_bot?start=s_skill) — quest diária de 3 questões,
+> sem cartão). A skill
 > (tutoria socrática + simulado de 60 questões) exige uma license key Pro.
 
 ## Pré-requisitos
