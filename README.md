@@ -20,8 +20,9 @@ from the AgentPrep API, live.
 
 - Claude Code installed.
 - An AgentPrep **Pro license key** (emailed to you after purchase at
-  `https://agentprep.dev/buy` — US$ 49.90/year list price; that page always shows the current
-  price, promotion included. Or US$ 4.99/week at `https://agentprep.dev/buy?plan=weekly` if you
+  `https://agentprep.dev/buy` — US$ 49.90/year **list** price; that page always shows the
+  current price, which is often BELOW this value when a promotion is live — the page, never
+  this file, is the source of truth for today's price. Or US$ 4.99/week at `https://agentprep.dev/buy?plan=weekly` if you
   would rather come in through the smaller door; both are geo-priced in BRL inside Brazil. If
   your instance is self-hosted under another domain, swap the domain and keep the `/buy` path)
   — or a dev key (`DEV_LICENSE_KEYS`) if you are testing against a self-hosted API.
