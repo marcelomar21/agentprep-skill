@@ -99,8 +99,34 @@ file into your tool calls, don't echo it in prose.
    no card), and **this skill unlocks with Pro** — the smallest door in is US$ 4.99/week
    (`https://agentprep.dev/buy?plan=weekly`), or US$ 49.90/year (`https://agentprep.dev/buy`); both are
    geo-priced and both include unlimited practice, the exact ready-by date, the 60-question simulado,
-   and the Telegram bot. Then stop — don't run quests/simulado without a key, and never invent
-   practice content to fake a free taste here.
+   and the Telegram bot.
+
+   **Then offer the free taste: one REAL question, right here, no account.** Never invent
+   practice content to fake it — you don't have to. These two routes serve the genuine
+   article with no license and **no `Authorization` header**; they are the same question the
+   bot hands a brand-new arrival. Ask before fetching ("want to try one right now?").
+
+   ```bash
+   # the question, WITHOUT its answer key. <LANG> takes the same value as your `lang` config.
+   curl -sS "<API_URL>/v1/app/sample-question?lang=<LANG>"
+   ```
+
+   Render `scenario`, `stem` and every `options[].key` / `options[].text`, then let the user
+   commit to a guess before you say anything about which option is right. You genuinely
+   cannot spoil it at this point: the answer key is stripped from this response on purpose.
+
+   ```bash
+   # the verdict, only after they have guessed. `id` is the `question.id` you just received.
+   curl -sS -X POST "<API_URL>/v1/app/sample-question/answer" \
+     -H "Content-Type: application/json" \
+     -d '{"id":"<QUESTION_ID>","chosen":["<KEY>"],"lang":"<LANG>"}'
+   ```
+
+   The verdict carries `correct`, `correct_options`, `explanations` and `refs` — tutor from
+   those in the Socratic voice the rest of this file describes, and only then point back at
+   the doors above. Both routes are anonymous, rate-limited and **write nothing**, so this
+   costs the user no account and no card. Then stop — don't run quests or the simulado
+   without a key.
 3. Detect the language the user is writing to you in; confirm it explicitly with the three
    supported options (English / Português (Brasil) / Español) rather than assuming silently
    the first time.
@@ -407,6 +433,7 @@ The API always returns errors as `{"error": {"code": "...", "message": "..."}}`.
 | `401` | Missing, invalid, revoked **or expired** license key. The API answers all four the same way — `unauthorized` / `"Invalid or expired license"` — so you **cannot** tell them apart from the response. There is no separate status code for expiry. | Cover both live possibilities in one message: ask the user to double-check the key (or re-run Setup), **and** say that if the key is correct their subscription may have lapsed — point them to the renewal link in the footer. Don't proceed with quest/simulado/stats. |
 | `409` on `/v1/licenses/activate` | This key is already bound to a different user | Explain clearly: one license key = one account. Ask the user to confirm this is *their* key (check the purchase email) or contact support. Never silently switch or merge accounts. |
 | `409` on `/v1/simulado/:id/finish` | That simulado was already finished — you're re-sending a `finish` that already went through (e.g. after a dropped connection) | **Harmless. Do not mention accounts or license keys.** Say the simulado is already closed and offer to show the stored result (`GET /v1/me/stats` lists recent simulados) or start a new one. Never re-`start` silently to "fix" it. |
+| `429` on `/v1/app/sample-question` or `/v1/app/sample-question/answer` | Rate limit on the free-taste routes — 60 requests per minute per IP, and it says **nothing** about the user or any key, since these routes take neither. `error.code` is `rate_limited` | Don't retry in a loop and don't turn it into an error message about their account. Wait the `Retry-After` seconds and try **once** more; if it still fails, skip the sample question, say the demo is busy right now, and carry on with setup — the free taste is a bonus, never a blocker. |
 | `429` on `/v1/licenses/activate` | Rate limit, not rejection — that endpoint accepts 20 activations per minute and you went over it by retrying. `error.code` is `rate_limited`, and this says **nothing** about whether the key is valid | **Never tell the user their key is wrong because of this, and never retry in a tight loop.** The response carries `Retry-After` (in seconds) and `x-ratelimit-*` headers — wait that long, then try **once** more. If it still fails, say the activation service is busy, ask them to try again in a minute, and point to support if it persists. |
 | `400` | Validation error | Show `error.message`; this usually means a bug in how the request was built — don't retry blindly with the same payload. |
 | `404` (e.g. stale `session_id` on `/simulado/:id/finish`) | Unknown resource | Explain and suggest restarting that flow (e.g. start a new simulado). |
