@@ -44,6 +44,29 @@ npx skills add marcelomar21/agentprep-skill
 > `skill/` in the AgentPrep repo, and CI republishes it automatically whenever the source
 > changes, so what you install here matches what production serves.
 
+> **What this skill can touch.** Public skill indexes run automated security scanners over
+> everything they list, and their verdicts are worth checking before you install anything —
+> including this. So that you can check ours quickly, here is the whole surface, and every
+> line of it is verifiable in the repository you are about to clone:
+>
+> - **It is two Markdown files.** `README.md` and `agentprep/SKILL.md` — nothing else. There is
+>   no `package.json`, no lockfile, no dependency of any kind, and no install or postinstall
+>   step — so beyond fetching those two files themselves, the install pulls in nothing.
+> - **The only command it runs that touches the network is `curl`**, against the AgentPrep API
+>   (`api.agentprep.dev`) — or `localhost`, if you point it at your own instance. Every endpoint
+>   it calls lives under `/v1/` and is documented publicly at
+>   [agentprep.dev/docs/api](https://agentprep.dev/docs/api?utm_source=skill). The only other
+>   commands it asks for are `mkdir -p ~/.agentprep` (once, to create the config directory) and
+>   `date` (to time the mock exam) — both local, neither reaching the network.
+> - **Once installed, it writes exactly one path on your machine:** `~/.agentprep/config.json`,
+>   holding your license key and language. Installing it also places the skill file itself at
+>   `~/.claude/skills/agentprep/` — that is what any Claude Code skill install does, by any of
+>   the three options above. `Uninstall` below removes both.
+>
+> A skill is instructions, not a program: what actually executes is your own Claude Code,
+> following the steps in `SKILL.md`. Read it before you install — it is short, and it is the
+> entire product.
+
 ### Option B — `git clone`
 
 ```bash
