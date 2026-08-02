@@ -16,6 +16,27 @@ from the AgentPrep API, live.
 > serves questions and tutoring in it. This README is in English because it is the page
 > strangers land on; it says nothing the skill won't repeat in your own language.
 
+## Free study guides (no key, no signup)
+
+Eleven guides on the Claude certifications — what each exam covers, who can sit it, how the
+format and scoring work, and how to prepare. They are free to read, need no license key and no
+account, and each one is also published in **pt-BR** and **es** (the language links sit at the
+top of every guide).
+
+- [Is the Claude certification worth it?](https://agentprep.dev/guide/is-the-claude-certification-worth-it/?utm_source=skill)
+- [Which Claude certification should you take?](https://agentprep.dev/guide/which-claude-certification-should-you-take/?utm_source=skill)
+- [Who can take the Claude certification?](https://agentprep.dev/guide/who-can-take-the-claude-certification/?utm_source=skill)
+- [What the Claude certification exam actually looks like](https://agentprep.dev/guide/claude-certification-exam-format/?utm_source=skill)
+- [How to prepare for the Claude certification — and how long it takes](https://agentprep.dev/guide/how-to-prepare-for-the-claude-certification/?utm_source=skill)
+- [Claude certification practice questions — where to find real ones](https://agentprep.dev/guide/claude-certification-practice-questions/?utm_source=skill)
+- [Claude certification exam day — what actually happens](https://agentprep.dev/guide/claude-certification-exam-day/?utm_source=skill)
+- [Claude Certified Associate — Foundations (CCAO-F)](https://agentprep.dev/guide/claude-certified-associate-foundations/?utm_source=skill)
+- [Claude Certified Developer — Foundations (CCDV-F)](https://agentprep.dev/guide/claude-certified-developer-foundations/?utm_source=skill)
+- [Claude Certified Architect — Foundations (CCAR-F)](https://agentprep.dev/guide/claude-certified-architect-foundations/?utm_source=skill)
+- [Claude Certified Architect — Professional (CCAR-P)](https://agentprep.dev/guide/claude-certified-architect-professional/?utm_source=skill)
+
+All of them, in the three languages: [English](https://agentprep.dev/guide/?utm_source=skill) · [Português](https://agentprep.dev/pt/guia/?utm_source=skill) · [Español](https://agentprep.dev/es/guia/?utm_source=skill)
+
 ## Requirements
 
 - Claude Code installed.
