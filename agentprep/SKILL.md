@@ -38,7 +38,9 @@ depth comes from you, using the raw material the API returns.
 
 **This skill file contains ZERO exam questions, options, or answers.** Every question,
 its options, its correct answer, and its explanations are fetched **live** from the
-AgentPrep API for every single quest and simulado. Never:
+AgentPrep API for every single quest and simulado — and so is theory: the concept intro
+`/agentprep quest` opens with (see step 3 there) comes from `GET /v1/theory`'s cards, which
+**you explain, you don't invent**. Never:
 
 - Cache or reuse question content across sessions or across users.
 - Invent, guess, or reconstruct a question/answer from memory if the API is unreachable.
@@ -189,7 +191,34 @@ Runs the daily quest: 5 questions, Socratic tutoring, immediate per-question fee
    `correct` or `explanations` field. That's intentional; you don't get those until you
    submit an answer.
 
-3. Mention the integrity note once, then walk the 5 questions **in order, one at a time**:
+3. Before the FIRST question, check whether its domain has theory the user hasn't seen yet:
+
+   ```bash
+   curl -sS "<API_URL>/v1/theory" \
+     -H "Authorization: Bearer <LICENSE_KEY>"
+   ```
+
+   Response: `{exam_id, cards: [{domain, title, body, key_point, example, source_url, seen}, ...]}`
+   — scoped to your active certification, same one `/v1/quest/today` operates on. Find the
+   card whose `domain` matches the first question's `domain`. If it exists and `seen` is
+   `false`, open the session with it **in your own words** — you are the one teaching here;
+   the card is source material, not a script to read verbatim. Use `title`/`body` to set up
+   the concept, stress `key_point` as what the exam actually tests, ground it with `example`,
+   and close with `source_url` as further reading. Then mark it seen so it doesn't repeat:
+
+   ```bash
+   curl -sS -X POST "<API_URL>/v1/theory/seen" \
+     -H "Authorization: Bearer <LICENSE_KEY>" \
+     -H "Content-Type: application/json" \
+     -d '{"domain":<DOMAIN_NUMBER>}'
+   ```
+
+   Do this **once per quest session, for the first question's domain only** — even if a
+   later question in the same 5 belongs to a domain with its own unseen card, don't open a
+   second theory digression for it (mirrors the bot: at most one theory card per day). If the
+   card is missing, or `seen` is already `true`, skip this step entirely and go straight to 4.
+
+4. Mention the integrity note once, then walk the 5 questions **in order, one at a time**:
    a. Present `scenario` (if present) + `stem` + lettered `options`.
    b. Coach Socratically **before** the user commits: ask what constraint matters most,
       what trade-off is at play, what they'd rule out and why. Don't reveal or hint at the
@@ -218,10 +247,10 @@ Runs the daily quest: 5 questions, Socratic tutoring, immediate per-question fee
    e. If the user wants to redo a question they already answered today, that's fine for
       practice — just tell them XP won't be granted twice for the same question on the same
       day (server-side idempotency; see next point).
-4. When the response to a question has `quest_completed: true`, show a completion recap:
+5. When the response to a question has `quest_completed: true`, show a completion recap:
    total XP earned this quest (including the +25 completion bonus), new level/rank if they
    leveled up, current streak (🔥 + day count), and a short encouragement.
-5. Resuming an interrupted quest is trivial: just call `GET /v1/quest/today` again — it
+6. Resuming an interrupted quest is trivial: just call `GET /v1/quest/today` again — it
    returns the same 5 questions for the day, and re-submitting an already-answered one via
    `POST /v1/answers` is safe (same feedback, no duplicate XP). You never need to track
    quest progress yourself between sessions.
