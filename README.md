@@ -85,12 +85,23 @@ npx skills add marcelomar21/agentprep-skill
 >   (`api.agentprep.dev`) — or `localhost`, if you point it at your own instance. Every endpoint
 >   it calls lives under `/v1/` and is documented publicly at
 >   [agentprep.dev/docs/api](https://agentprep.dev/docs/api?utm_source=skill). The only other
->   commands it asks for are `mkdir -p ~/.agentprep` (once, to create the config directory) and
->   `date` (to time the mock exam) — both local, neither reaching the network.
-> - **Once installed, it writes exactly one path on your machine:** `~/.agentprep/config.json`,
->   holding your license key and language. Installing it also places the skill file itself at
->   `~/.claude/skills/agentprep/` — that is what any Claude Code skill install does, by any of
->   the three options above. `Uninstall` below removes both.
+>   commands it asks for are `mkdir -p ~/.agentprep` (once, to create the config directory),
+>   `date` (to time the mock exam) and `node` (see the next bullet) — all local, none reaching
+>   the network.
+> - **One feature executes code, and only if you ask for it: the verified challenges.** When
+>   you start one, the skill downloads a small self-contained bench over HTTPS from
+>   `api.agentprep.dev`, writes it under `~/.agentprep/desafios/<challenge>/`, and runs
+>   `node probe.mjs` from that directory to check your work. The bench and the probe are plain
+>   Node scripts with no dependencies. The probe opens no network socket and reads exactly one
+>   file — the `.mcp.json` in that directory — and then starts the MCP server that file points
+>   at, which is the practice server sitting next to it and yours to edit. Both scripts are in
+>   this repository under `content/desafios/`, and the API serves those exact bytes — read them
+>   before you run them. If you never ask for a challenge, nothing here ever executes.
+> - **It writes under exactly one directory on your machine:** `~/.agentprep/` —
+>   `config.json`, holding your license key and language, plus `desafios/` if you start a
+>   challenge. Installing it also places the skill file itself at `~/.claude/skills/agentprep/`
+>   — that is what any Claude Code skill install does, by any of the three options above.
+>   `Uninstall` below removes both.
 >
 > A skill is instructions, not a program: what actually executes is your own Claude Code,
 > following the steps in `SKILL.md`. Read it before you install — it is short, and it is the

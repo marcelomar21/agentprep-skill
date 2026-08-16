@@ -312,6 +312,73 @@ that's the whole point of exam mode. Review happens only after `finish`.
    decide *which* missed questions to prioritize when there are many, but don't stop at
    the domain-level bar when you have the per-question detail — that's strictly richer.
 
+## `/agentprep desafio` — the verified challenge
+
+Everything else in this skill measures what the user **says**. This measures what their
+environment **does**: a real, broken MCP server, on their machine, verified by a probe that
+starts the server and speaks JSON-RPC to it. Nothing is graded by a model — a field is either
+in the response or it is not — so the feedback is the same every time and costs nothing to
+produce. It is also the one thing free study material cannot hand them.
+
+**Read this before you run it, and say it to the user before you write anything:** this is the
+only part of AgentPrep that puts files on their disk and executes one of them. Everything the
+probe runs came from `api.agentprep.dev` over HTTPS in the step below, it stays inside
+`~/.agentprep/desafios/`, and it reaches no network. Offer it, don't assume it.
+
+1. See what exists and where they left off:
+
+   ```bash
+   curl -sS "<API_URL>/v1/challenges" \
+     -H "Authorization: Bearer <LICENSE_KEY>"
+   ```
+
+   Each entry carries `slug`, `title`, `skill`, `minutos` and the user's `status`
+   (`never_started` / `in_progress` / `solved`) with `attempts`. A challenge is **free** —
+   it's the demonstration, not the paid tier.
+
+2. Fetch the bench for the one they picked:
+
+   ```bash
+   curl -sS "<API_URL>/v1/challenges/<SLUG>" \
+     -H "Authorization: Bearer <LICENSE_KEY>"
+   ```
+
+   The response carries `brief` (markdown, already in their language), `diretorio` (where it
+   goes — always under `~/.agentprep/desafios/`), `checks` (the ordered list of questions the
+   probe will ask) and `files`: an array of `{path, content}`.
+
+3. Create `diretorio` with `mkdir -p`, then write every entry of `files` to `path` inside it,
+   byte for byte. Show them the `brief`. Do **not** read the bench looking for the answer and
+   do **not** hand it over: the whole point is that they find it. If they ask for a hint, give
+   the smallest one that unblocks them and let the probe be the judge.
+
+4. Let them work, then run the probe from that directory:
+
+   ```bash
+   node probe.mjs
+   ```
+
+   It stops at the first thing that is broken and names it — *"the field is `tools`, not
+   `functions`"* — instead of returning a bare pass/fail. The human report goes to stderr; the
+   last line of stdout is `AGENTPREP_RESULTADO ` followed by a JSON object with `status` and
+   `checks`. Exit code is 0 when everything passed, 1 otherwise. Relay the diagnosis in your
+   own words and let them fix one thing at a time; re-running is free and expected.
+
+5. Record the attempt — every run, red ones included, because the red ones are the ones that
+   say where people get stuck:
+
+   ```bash
+   curl -sS -X POST "<API_URL>/v1/challenges/<SLUG>/attempts" \
+     -H "Authorization: Bearer <LICENSE_KEY>" \
+     -H "Content-Type: application/json" \
+     -d '{"checks":[{"id":"config-chave","status":"passed"}],"duration_ms":900000}'
+   ```
+
+   Send the `checks` array exactly as the probe emitted it. The server derives the verdict
+   from those checks, so there is no `status` field to send. The response gives back `status`,
+   `passed`/`total`, `first_solve`, `attempts` and `next` (the first failing check with its
+   diagnosis, or `null`). Celebrate `first_solve` — briefly — and offer the next challenge.
+
 ## `/agentprep stats`
 
 ```bash
@@ -466,7 +533,7 @@ The API always returns errors as `{"error": {"code": "...", "message": "..."}}`.
 | `429` on `/v1/app/sample-question` or `/v1/app/sample-question/answer` | Rate limit on the free-taste routes — 60 requests per minute per IP, and it says **nothing** about the user or any key, since these routes take neither. `error.code` is `rate_limited` | Don't retry in a loop and don't turn it into an error message about their account. Wait the `Retry-After` seconds and try **once** more; if it still fails, skip the sample question, say the demo is busy right now, and carry on with setup — the free taste is a bonus, never a blocker. |
 | `429` on `/v1/licenses/activate` | Rate limit, not rejection — that endpoint accepts 20 activations per minute and you went over it by retrying. `error.code` is `rate_limited`, and this says **nothing** about whether the key is valid | **Never tell the user their key is wrong because of this, and never retry in a tight loop.** The response carries `Retry-After` (in seconds) and `x-ratelimit-*` headers — wait that long, then try **once** more. If it still fails, say the activation service is busy, ask them to try again in a minute, and point to support if it persists. |
 | `400` | Validation error | Show `error.message`; this usually means a bug in how the request was built — don't retry blindly with the same payload. |
-| `404` (e.g. stale `session_id` on `/simulado/:id/finish`) | Unknown resource | Explain and suggest restarting that flow (e.g. start a new simulado). |
+| `404` (e.g. stale `session_id` on `/simulado/:id/finish`, or a challenge slug that does not exist) | Unknown resource | Explain and suggest restarting that flow (e.g. start a new simulado). |
 
 ## Example strings (en / pt-BR / es)
 
