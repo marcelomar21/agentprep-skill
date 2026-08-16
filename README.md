@@ -18,10 +18,18 @@ from the AgentPrep API, live.
 
 ## Free study guides (no key, no signup)
 
-Eleven guides on the Claude certifications — what each exam covers, who can sit it, how the
-format and scoring work, and how to prepare. They are free to read, need no license key and no
-account, and each one is also published in **pt-BR** and **es** (the language links sit at the
-top of every guide).
+Fourteen guides — eleven on the Claude certifications (what each exam covers, who can sit it,
+how the format and scoring work, and how to prepare) and three on the craft itself, which
+mention no exam at all. They are free to read, need no license key and no account, and each one
+is also published in **pt-BR** and **es** (the language links sit at the top of every guide).
+
+On the craft:
+
+- [What is MCP (Model Context Protocol)?](https://agentprep.dev/guide/what-is-mcp/?utm_source=skill)
+- [What is a context window?](https://agentprep.dev/guide/what-is-a-context-window/?utm_source=skill)
+- [What are Claude Code hooks?](https://agentprep.dev/guide/what-are-claude-code-hooks/?utm_source=skill)
+
+On the certifications:
 
 - [Is the Claude certification worth it?](https://agentprep.dev/guide/is-the-claude-certification-worth-it/?utm_source=skill)
 - [Which Claude certification should you take?](https://agentprep.dev/guide/which-claude-certification-should-you-take/?utm_source=skill)
